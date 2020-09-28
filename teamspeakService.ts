@@ -65,17 +65,18 @@ export class TeamSpeakService {
                 })
 
                 monitorService.addMonitor(monitor);
-
+                ev.invoker.message(`Service added`);
                 break;
             case commands.REMOVESERVICE:
                 monitorService.removeMonitorById(parseInt(command[1]));
-
+                ev.invoker.message(`Service removed`);
                 break;
             case commands.SETMONITORCHANNEL:    
                 this.teamspeak.getChannelById(command[1]).then(channel => {
                     console.log(channel);
                     if(channel) {
                         this.activeChannel = channel;
+                        ev.invoker.message(`Active monitoring channel changed to ${channel.name}`);
                     } else {
                         ev.invoker.message(`Could not add channel "${command[1]}".`);    
                     }
@@ -98,6 +99,7 @@ export class TeamSpeakService {
                 break;
             case commands.NOTIFYME:
                 this.usersToNotify.push(ev.invoker);
+                ev.invoker.message("You subscribed to the notifications");
                 break;
             case commands.HELP:
                 ev.invoker.message(getHelpMessage());
@@ -109,6 +111,14 @@ export class TeamSpeakService {
             default:
                 ev.invoker.message(`Unknown command: ${command[0]}`);
         }
+    }
+
+    public notifyPoke(monitor: Monitor) {
+        this.usersToNotify.forEach(user => {
+            user.poke(`ALERT: ${monitor.getName()} is down!`).catch((e) => {
+                console.log("Could not poke user", e);
+            });
+        })
     }
 }
 
@@ -129,7 +139,7 @@ function clientIsAllowed(client): boolean {
 function isCommand(message: string) {
     return message.startsWith(cmdPrefix);
 }
-
+ 
 function getHelpMessage(): string {
     return "Here is a list of all commands: \n"+
     "Service: \n"+

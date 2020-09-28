@@ -56,7 +56,12 @@ export class MonitorService {
 
         this.monitors.forEach(async monitor => {
             await isPortReachable(monitor.getPort(), {host:monitor.getIp()}).then(result => {
-                if(result != monitor.isReachable()) imageUpdateRequired = true; // if the result differs from the previous result update the image
+                if(result != monitor.isReachable()) {
+                    imageUpdateRequired = true; // if the result differs from the previous result update the image
+                    if(result == false) { // if the result just changed to false notify the users
+                        this.teamSpeakService.notifyPoke(monitor);
+                    }
+                }
                 monitor.setReachable(result);
 
                 checkedMonitors++;
