@@ -54,6 +54,8 @@ export class MonitorService {
         let checkedMonitors: number = 0;
         let imageUpdateRequired: boolean = false;
 
+        if(!this.monitors) return; // if for some reason monitors is undefined
+
         this.monitors.forEach(async monitor => {
             await isPortReachable(monitor.getPort(), {host:monitor.getIp()}).then(result => {
                 if(result != monitor.isReachable()) {
