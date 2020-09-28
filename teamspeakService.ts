@@ -12,7 +12,7 @@ export class TeamSpeakService {
     private static instance: TeamSpeakService;
     private teamspeak: TeamSpeak;
     private activeChannel: TeamSpeakChannel;
-    private usersToNotify: Array<TeamSpeakClient>;
+    private usersToNotify: Array<TeamSpeakClient> = [];
 
     private constructor() {}
 
