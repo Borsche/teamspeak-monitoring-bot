@@ -56,7 +56,9 @@ export class MonitorService {
 
         if(!this.monitors) return; // if for some reason monitors is undefined
 
+        console.log("Pinging Services..");
         this.monitors.forEach(async monitor => {
+            console.log(`   Pinging Service ${monitor.getName()}`);
             await isPortReachable(monitor.getPort(), {host:monitor.getIp()}).then(result => {
                 if(result != monitor.isReachable()) {
                     imageUpdateRequired = true; // if the result differs from the previous result update the image
@@ -64,11 +66,13 @@ export class MonitorService {
                         this.teamSpeakService.notifyPoke(monitor);
                     }
                 }
+                console.log(`   ${result}`);
                 monitor.setReachable(result);
 
                 checkedMonitors++;
 
                 if(checkedMonitors == this.monitors.length && imageUpdateRequired) {
+                    console.log(`Updating image`);
                     this.updateImage();
                 }
             })

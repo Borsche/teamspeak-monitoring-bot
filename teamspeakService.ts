@@ -73,7 +73,7 @@ export class TeamSpeakService {
                 break;
             case commands.SETMONITORCHANNEL:    
                 this.teamspeak.getChannelById(command[1]).then(channel => {
-                    console.log(channel);
+
                     if(channel) {
                         this.activeChannel = channel;
                         ev.invoker.message(`Active monitoring channel changed to ${channel.name}`);
@@ -87,7 +87,7 @@ export class TeamSpeakService {
                 break;
             case commands.GETCHANNELID:
                 this.teamspeak.getChannelByName(command[1]).then(channel => {
-                    console.log(channel);
+                    
                     if(channel) {
                         ev.invoker.message(`The channel ${channel.name} has the id ${channel.cid}`);
                     } else {
