@@ -11,7 +11,7 @@ export class MonitorService {
 
     private constructor() { 
         this.teamSpeakService = TeamSpeakService.getInstance();
-        setInterval(this.doPingTask, 10000); // start the ping task interval
+        setInterval(() => { this.doPingTask() }, 10000); // start the ping task interval
     }
 
     public static getInstance(): MonitorService {
