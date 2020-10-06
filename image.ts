@@ -42,7 +42,7 @@ export class Image {
          * Reachable Circle
          */
 
-        let fillColor = monitor.isReachable ? colors.GREEN : colors.RED;
+        let fillColor = monitor.isReachable() ? colors.GREEN : colors.RED;
         
         context.beginPath();
         context.arc(0,mainHeight - 5,5,0,2*Math.PI);
