@@ -1,2 +1,3 @@
 default:
     image: node:lts-slim
+    script: node -v
