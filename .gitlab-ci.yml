@@ -1,0 +1,2 @@
+default:
+    image: node:lts-slim
