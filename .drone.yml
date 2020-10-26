@@ -4,7 +4,7 @@ name: default
 
 steps:
 - name: test
-  image: node:lts-slim
+  image: node
   commands:
   - npm install
   - npm test
