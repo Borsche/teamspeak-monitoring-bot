@@ -4,7 +4,7 @@ name: default
 
 steps:
 - name: test
-  image: node
+  image: node:lts
   commands:
   - npm install
   - npm test
