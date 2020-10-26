@@ -2,6 +2,7 @@ import { Monitor } from '../models/monitor';
 import * as isPortReachable from 'is-port-reachable';
 import { Image } from '../models/image';
 import { TeamSpeakService } from "./teamspeakService";
+import { Logger } from '../logger/logger';
 
 export class MonitorService {
     private static instance: MonitorService;
@@ -26,8 +27,6 @@ export class MonitorService {
     public addMonitor(monitor: Monitor) {
 
         const id: number = this.getHighestId();
-
-        console.log(id);
 
         monitor.setId(id+1);
         this.monitors.push(monitor);
@@ -66,14 +65,15 @@ export class MonitorService {
     }
 
     private doPingTask() {
+        const logger = Logger.getInstance();
         let checkedMonitors: number = 0;
         let imageUpdateRequired: boolean = false;
 
         if(!this.monitors) return; // if for some reason monitors is undefined
 
-        console.log("Pinging Services..");
+        logger.Info("Pinging Services..");
         this.monitors.forEach(async monitor => {
-            console.log(`   Pinging Service ${monitor.getName()}`);
+            logger.Info(`   Pinging Service ${monitor.getName()}`);
             await isPortReachable(monitor.getPort(), {host:monitor.getIp()}).then(result => {
                 if(result != monitor.isReachable()) {
                     imageUpdateRequired = true; // if the result differs from the previous result update the image
@@ -81,13 +81,13 @@ export class MonitorService {
                         this.teamSpeakService.notifyPoke(monitor);
                     }
                 }
-                console.log(`   ${result}`);
+                logger.Info(`   ${result}`);
                 monitor.setReachable(result);
 
                 checkedMonitors++;
 
                 if(checkedMonitors == this.monitors.length && imageUpdateRequired) {
-                    console.log(`Updating image`);
+                    logger.Info(`Updating image`);
                     this.updateImage();
                 }
             })
@@ -113,7 +113,6 @@ export class MonitorService {
     }
 
     public shutDownPingTask(): void {
-        console.log("Shutting Down Ping Task");
         clearInterval(this.pingTaskInterval);
     }
 }

@@ -2,6 +2,7 @@ import { TeamSpeak, TeamSpeakChannel, TeamSpeakClient } from "ts3-nodejs-library
 import { Monitor } from "../models/monitor";
 import { MonitorService } from "./monitorService";
 import { commands } from "../models/command";
+import { Logger } from "../logger/logger";
 
 const cmdPrefix = "!";
 const allowedGroupId = "6";
@@ -116,7 +117,8 @@ export class TeamSpeakService {
     public notifyPoke(monitor: Monitor) {
         this.usersToNotify.forEach(user => {
             user.poke(`ALERT: ${monitor.getName()} is down!`).catch((e) => {
-                console.log("Could not poke user", e);
+                const logger = Logger.getInstance();
+                logger.Error(e);
             });
         })
     }

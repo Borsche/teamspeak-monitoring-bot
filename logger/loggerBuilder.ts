@@ -5,9 +5,10 @@ export class LoggerBuilder {
 
     private path: string;
     private errorStyle: string;
+    private normalStyle: string;
 
     public setPath(path: string): LoggerBuilder {
-        this.path = path;
+        this.path = "../" + path;
         return this;
     }
 
@@ -16,7 +17,16 @@ export class LoggerBuilder {
         return this;
     }
 
+    public setNormalStyle(val: number): LoggerBuilder {
+        this.normalStyle += `\\e[${val}m`;
+        return this;
+    }
+
     public build(): Logger {
-        return new Logger();
+        return Logger.getInstance(this.path, this.errorStyle, this.normalStyle);
+    }
+
+    public getLoggerInstance(): Logger {
+        return Logger.getInstance();
     }
 }

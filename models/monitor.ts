@@ -1,3 +1,5 @@
+import { Logger } from "../logger/logger";
+
 export class Monitor {
 
     private port : number;
@@ -10,7 +12,8 @@ export class Monitor {
         this.port = options.port;
         this.ip = options.ip;
         this.name = options.name;
-        console.log(`new monitoring class for service ${this.ip}:${this.port}`);
+        const logger = Logger.getInstance();
+        logger.Info(`new monitoring class for service ${this.ip}:${this.port}`);
     }
 
     setId(id : number) {
