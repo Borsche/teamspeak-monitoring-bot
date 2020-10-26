@@ -1,6 +1,6 @@
-import { Monitor } from './monitor';
+import { Monitor } from '../models/monitor';
 import * as isPortReachable from 'is-port-reachable';
-import { Image } from './image';
+import { Image } from '../models/image';
 import { TeamSpeakService } from "./teamspeakService";
 
 export class MonitorService {

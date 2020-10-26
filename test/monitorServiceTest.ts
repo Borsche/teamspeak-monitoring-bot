@@ -1,8 +1,8 @@
 import { describe, it} from "mocha";
 import * as assert from "assert";
 
-import { MonitorService } from "../monitorService";
-import { Monitor, MonitorConstructorOptions } from "../monitor";
+import { MonitorService } from "../monitor/monitorService";
+import { Monitor, MonitorConstructorOptions } from "../monitor/monitor";
 
 describe('Testing MonitorService', () => {
     it('Should received same instance', () => {

@@ -1,7 +1,7 @@
 import { TeamSpeak, TeamSpeakChannel, TeamSpeakClient } from "ts3-nodejs-library";
-import { Monitor } from "./monitor";
+import { Monitor } from "../models/monitor";
 import { MonitorService } from "./monitorService";
-import { commands } from "./command";
+import { commands } from "../models/command";
 
 const cmdPrefix = "!";
 const allowedGroupId = "6";

@@ -7,4 +7,4 @@ steps:
   image: node:lts-slim
   commands:
   - npm install
-  - npm run test
+  - npm test
