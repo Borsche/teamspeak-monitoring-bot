@@ -24,7 +24,12 @@ export class MonitorService {
     }
 
     public addMonitor(monitor: Monitor) {
-        monitor.setId(this.monitors.length);
+
+        const id: number = this.getHighestId();
+
+        console.log(id);
+
+        monitor.setId(id+1);
         this.monitors.push(monitor);
 
         this.doPingTask();
@@ -49,6 +54,15 @@ export class MonitorService {
         if(index > -1) {
             this.monitors.splice(index, 1);
         }
+    }
+
+    private getHighestId(): number {
+        let id: number = 0;
+        this.monitors.forEach((monitor) => {
+            id = monitor.getId() > id ? monitor.getId() : id;
+        })
+
+        return id;
     }
 
     private doPingTask() {

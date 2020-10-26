@@ -10,22 +10,25 @@ describe('Testing MonitorService', () => {
         assert.strictEqual(monitorService, MonitorService.getInstance());
     })
 
-    it('Shouldn\'t assign Monitors the same id', () => {
+    it('Shouldn\'t assign Monitors the same id', (done) => {
         const monitorService = MonitorService.getInstance();
         const options: MonitorConstructorOptions = {
             port: 0,
             ip: "localhost",
             name: "Test"
         }
-        const monitor = new Monitor(options);
+        const monitor1 = new Monitor(options);
+        const monitor2 = new Monitor(options);
+        const monitor3 = new Monitor(options);
 
-        monitorService.addMonitor(monitor);
-        monitorService.addMonitor(monitor)
-        monitorService.removeMonitorById(1);
-        monitorService.addMonitor(monitor);
+        monitorService.addMonitor(monitor1);
+        monitorService.addMonitor(monitor2)
+        monitorService.removeMonitorById(0);
+        monitorService.addMonitor(monitor3);
 
         const monitors = monitorService.getAllMonitors();
         monitorService.shutDownPingTask();
-        assert.notStrictEqual(monitors[0].getId(), monitors[1].getId());
+        assert.notStrictEqual(monitors[0].getId(), monitors[1].getId())
+        done();
     })
 });
