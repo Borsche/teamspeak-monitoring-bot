@@ -1,7 +1,7 @@
 default:
   image: node:lts-slim
 
-node test:
+node_test:
   script: echo "checking node version.."
   script: node -v
 
