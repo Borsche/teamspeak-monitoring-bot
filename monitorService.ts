@@ -8,10 +8,11 @@ export class MonitorService {
 
     private monitors : Array<Monitor> = [];
     private teamSpeakService: TeamSpeakService;
+    private pingTaskInterval;
 
     private constructor() { 
         this.teamSpeakService = TeamSpeakService.getInstance();
-        setInterval(() => { this.doPingTask() }, 10000); // start the ping task interval
+        this.pingTaskInterval = setInterval(() => { this.doPingTask() }, 10000); // start the ping task interval
     }
 
     public static getInstance(): MonitorService {
@@ -95,5 +96,10 @@ export class MonitorService {
         teamSpeak.channelEdit(channel, {channelDescription: `[IMG]ts3image://monImage.png?channel=${channel.cid}&path=/[/IMG]`});
 
         //fs.writeFileSync('./test_image/image.png', buffer); //use this for debuggin
+    }
+
+    public shutDownPingTask(): void {
+        console.log("Shutting Down Ping Task");
+        clearInterval(this.pingTaskInterval);
     }
 }

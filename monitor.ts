@@ -6,7 +6,7 @@ export class Monitor {
     private id : number;
     private reachable : boolean = false;
 
-    constructor(options : MonitorConstructorOptions) {
+    constructor(options: MonitorConstructorOptions) {
         this.port = options.port;
         this.ip = options.ip;
         this.name = options.name;
@@ -43,7 +43,7 @@ export class Monitor {
     
 }
 
-interface MonitorConstructorOptions {
+export interface MonitorConstructorOptions {
     port: number,
     ip: string,
     name: string
