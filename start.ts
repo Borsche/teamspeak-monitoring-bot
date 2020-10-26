@@ -1,15 +1,7 @@
-import { TeamSpeakService } from "./teamspeakService";
-import { TeamSpeak } from "ts3-nodejs-library";
-import { Image } from './image';
-
-const config = {
-    host: "ts.syrucx.net",
-    username: "monitoring_bot",
-    password: "ztwgTWVW",
-    nickname: "monitoring_bot",
-    queryport: 10011,
-    serverport: 9987,
-}
+import { TeamSpeakService } from "./service/teamspeakService";
+import { TeamSpeak, ConnectionParams } from "ts3-nodejs-library";
+import * as fs from "fs";
+import * as config from "./config.json";
 
 const teamSpeakService = TeamSpeakService.getInstance();
 

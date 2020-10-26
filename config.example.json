@@ -1,0 +1,8 @@
+{
+    "host": "com.example.de",
+    "username": "server_query name",
+    "password": "server_query password",
+    "nickname": "visible nickname",
+    "queryport": 10011,
+    "serverport": 9987
+}
