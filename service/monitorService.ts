@@ -39,16 +39,11 @@ export class MonitorService {
     }
 
     public getMonitorById(id : number) : Monitor {
-        return this.monitors.find(monitor => {monitor.getId() == id});
+        return this.monitors.find(monitor => id == monitor.getId());
     }
 
     public removeMonitorById(id: number) {
-        let foundMonitor;
-        this.monitors.filter(monitor=> {
-            monitor.getId() == id;
-            foundMonitor = monitor;
-        });
-
+        const foundMonitor = this.getMonitorById(id);
         const index = this.monitors.indexOf(foundMonitor);
         if(index > -1) {
             this.monitors.splice(index, 1);
