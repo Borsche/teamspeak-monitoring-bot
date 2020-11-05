@@ -3,6 +3,7 @@ import { Monitor } from "../models/monitor";
 import { MonitorService } from "./monitorService";
 import { commands } from "../models/command";
 import { Logger } from "../logger/logger";
+import { Persister } from "./persister";
 
 const cmdPrefix = "!";
 const allowedGroupId = "6";
@@ -37,6 +38,34 @@ export class TeamSpeakService {
         return this.activeChannel;
     }
 
+    setMonitoringChannelWithId(id): string {
+        const persister: Persister = Persister.getInstance();
+
+        this.teamspeak.getChannelById(id).then(channel => {
+            if(channel) {
+                this.activeChannel = channel;
+                persister.setMonitoringChannel(channel);
+
+                return `Active monitoring channel changed to ${channel.name}`;
+            } else {
+                return `Could not add channel "${id}".`;    
+            }
+        }).catch(e => {
+            return `No Channel with name "${id}" exists.`;
+        });
+
+        return "";
+    }
+
+    addUsersToNotifyById(uid): void {
+        this.teamspeak.getClientByUid(uid).then(user => {
+            this.usersToNotify.push(user);
+        }).catch(e => {
+            const logger = Logger.getInstance();
+            logger.Error(e);
+        })
+    }
+
     handleMessage(ev) {
         if(isCommand(ev.msg)) {
             if(clientIsAdmin(ev.invoker) || clientIsAllowed(ev.invoker)) {
@@ -53,6 +82,7 @@ export class TeamSpeakService {
         const command = ev.msg.replace(cmdPrefix, '').split(" ");
                 
         const monitorService = MonitorService.getInstance();
+        const persister: Persister = Persister.getInstance();
 
         switch(command[0]) {
             case commands.ADDSERVICE:
@@ -66,6 +96,9 @@ export class TeamSpeakService {
                 })
 
                 monitorService.addMonitor(monitor);
+
+                persister.setMonitors(monitorService.getAllMonitors());
+
                 ev.invoker.message(`Service added`);
                 break;
             case commands.REMOVESERVICE:
@@ -73,18 +106,7 @@ export class TeamSpeakService {
                 ev.invoker.message(`Service removed`);
                 break;
             case commands.SETMONITORCHANNEL:    
-                this.teamspeak.getChannelById(command[1]).then(channel => {
-
-                    if(channel) {
-                        this.activeChannel = channel;
-                        ev.invoker.message(`Active monitoring channel changed to ${channel.name}`);
-                    } else {
-                        ev.invoker.message(`Could not add channel "${command[1]}".`);    
-                    }
-                }).catch(e => {
-                    ev.invoker.message(`No Channel with name "${command[1]}" exists.`);
-                })
-
+                ev.invoker.message(this.setMonitoringChannelWithId(command[1]));
                 break;
             case commands.GETCHANNELID:
                 this.teamspeak.getChannelByName(command[1]).then(channel => {
@@ -100,6 +122,7 @@ export class TeamSpeakService {
                 break;
             case commands.NOTIFYME:
                 this.usersToNotify.push(ev.invoker);
+                persister.setNotifySubscribers(this.usersToNotify);
                 ev.invoker.message("You subscribed to the notifications");
                 break;
             case commands.HELP:
