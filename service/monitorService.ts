@@ -3,6 +3,7 @@ import * as isPortReachable from 'is-port-reachable';
 import { Image } from '../models/image';
 import { TeamSpeakService } from "./teamspeakService";
 import { Logger } from '../logger/logger';
+import { Persister } from './persister';
 
 export class MonitorService {
     private static instance: MonitorService;
@@ -10,6 +11,7 @@ export class MonitorService {
     private monitors : Array<Monitor> = [];
     private teamSpeakService: TeamSpeakService;
     private pingTaskInterval;
+    private persister: Persister = Persister.getInstance();
 
     private constructor() { 
         this.teamSpeakService = TeamSpeakService.getInstance();
@@ -30,6 +32,7 @@ export class MonitorService {
 
         monitor.setId(id+1);
         this.monitors.push(monitor);
+        this.persister.setMonitors(this.monitors);
 
         this.doPingTask();
     }

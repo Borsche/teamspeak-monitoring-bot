@@ -51,12 +51,12 @@ export class Persister{
 
     private setUpMonitoringChannel(): void {
         const teamSpeakService: TeamSpeakService = TeamSpeakService.getInstance();
-        teamSpeakService.setMonitoringChannelWithId(data.channel.cid);
+        teamSpeakService.setMonitoringChannelWithId(data.monitoringChannel.cid);
     }
 
     private setUpNotifySubscribers(): void {
         const teamSpeakService: TeamSpeakService = TeamSpeakService.getInstance();
-        data.clients.forEach(client => {
+        data.notifySubscribers.forEach(client => {
             teamSpeakService.addUsersToNotifyById(client.cid);
         });
     }
