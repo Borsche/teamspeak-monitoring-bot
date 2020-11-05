@@ -1,10 +1,38 @@
 kind: pipeline
 type: docker
-name: default
+name: Test
 
 steps:
-- name: test
+- name: Test
   image: node:lts
   commands:
   - npm install
   - npm test
+
+---
+kind: pipeline
+type: ssh
+name: Deploy
+
+server:
+  host: 85.214.231.163
+  user:
+    from_secret: username
+  password:
+    from_secret: password
+
+steps:
+- name: Stop The Bot
+  commands:
+    - cd teamspeak-monitoring-bot 
+    - screen -X -S tsbot quit
+- name: Pull Changes
+  commands:
+    - git pull
+- name: Reinstall NodeModules
+  commands:
+    - rm -rf node_modules/
+    - npm install
+- name: Start The Bot
+  commands:
+    - screen -dm -S tsbot npm start  
