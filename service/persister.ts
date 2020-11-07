@@ -15,6 +15,7 @@ export class Persister{
 
     private constructor() {
         this.data = new Persistdata();
+        this.data = <Persistdata>data;
     }
 
     public static getInstance(): Persister {
@@ -53,7 +54,7 @@ export class Persister{
     private setUpMonitors(): void {
         const monitorService: MonitorService = MonitorService.getInstance();
 
-        data.monitors.forEach(monitor => {
+        this.data.monitors.forEach(monitor => {
             const mon: Monitor = new Monitor({port: monitor.port, ip: monitor.ip, name: monitor.name});
             monitorService.addMonitor(mon);
         });
@@ -61,15 +62,15 @@ export class Persister{
 
     private setUpMonitoringChannel(): void {
         const teamSpeakService: TeamSpeakService = TeamSpeakService.getInstance();
-        teamSpeakService.setMonitoringChannelWithId(data.monitoringChannelCid);
+        teamSpeakService.setMonitoringChannelWithId(this.data.monitoringChannelCid);
     }
 
-    // private setUpNotifySubscribers(): void {
-    //     const teamSpeakService: TeamSpeakService = TeamSpeakService.getInstance();
-    //     data.notifySubscribers.forEach(cid => {
-    //         teamSpeakService.addUsersToNotifyById(cid);
-    //     });
-    // }
+    private setUpNotifySubscribers(): void {
+        const teamSpeakService: TeamSpeakService = TeamSpeakService.getInstance();
+        this.data.notifySubscribers.forEach(cid => {
+            teamSpeakService.addUsersToNotifyById(cid);
+        });
+    }
 
     public setUpAll() {
         this.setUpMonitoringChannel();
