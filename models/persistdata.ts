@@ -1,6 +1,3 @@
-import { Logger } from "../logger/logger";
-import { TeamSpeakChannel, TeamSpeakClient } from "ts3-nodejs-library";
-
 export class Persistdata {
     public monitors: Array<PersistMonitor> = [];
     public monitoringChannelCid: string = "";
