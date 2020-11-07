@@ -5,16 +5,17 @@ import { Monitor } from "../models/monitor";
 import { MonitorService } from "./monitorService";
 import { TeamSpeakService} from "./teamspeakService";
 import * as data from "../settings.json";
+import { Persistdata, PersistMonitor } from "../models/persistdata";
 
 export class Persister{
     private static instance: Persister;
 
     private path: string = "./settings.json";
-    private monitors: Array<Monitor>;
-    private channel: TeamSpeakChannel;
-    private clients: Array<TeamSpeakClient>;
+    private data: Persistdata;
 
-    private constructor() {}
+    private constructor() {
+        this.data = new Persistdata();
+    }
 
     public static getInstance(): Persister {
         if(!Persister.instance){
@@ -25,22 +26,31 @@ export class Persister{
     }
 
     public setMonitors(monitors: Array<Monitor>): void {
-        this.monitors = monitors;
+        this.data.monitors = [];
+        monitors.forEach(monitor => {
+            const persistMonitor = new PersistMonitor();
+            persistMonitor.ip = monitor.getIp();
+            persistMonitor.name = monitor.getName();
+            persistMonitor.port = monitor.getPort();
+            this.data.monitors.push(persistMonitor);
+        })
         this.safeAll();
     }
 
     public setMonitoringChannel(channel: TeamSpeakChannel): void {
-        this.channel = channel;
+        this.data.monitoringChannelCid = channel.cid;
         this.safeAll();
     }
 
     public setNotifySubscribers(clients: Array<TeamSpeakClient>): void {
-        this.clients = clients;
+        this.data.notifySubscribers = [];
+        clients.forEach(client => {
+            this.data.notifySubscribers.push(client.cid);
+        })
         this.safeAll();
     }
 
     private setUpMonitors(): void {
-
         const monitorService: MonitorService = MonitorService.getInstance();
 
         data.monitors.forEach(monitor => {
@@ -51,25 +61,25 @@ export class Persister{
 
     private setUpMonitoringChannel(): void {
         const teamSpeakService: TeamSpeakService = TeamSpeakService.getInstance();
-        teamSpeakService.setMonitoringChannelWithId(data.monitoringChannel.cid);
+        teamSpeakService.setMonitoringChannelWithId(data.monitoringChannelCid);
     }
 
-    private setUpNotifySubscribers(): void {
-        const teamSpeakService: TeamSpeakService = TeamSpeakService.getInstance();
-        data.notifySubscribers.forEach(client => {
-            teamSpeakService.addUsersToNotifyById(client.cid);
-        });
-    }
+    // private setUpNotifySubscribers(): void {
+    //     const teamSpeakService: TeamSpeakService = TeamSpeakService.getInstance();
+    //     data.notifySubscribers.forEach(cid => {
+    //         teamSpeakService.addUsersToNotifyById(cid);
+    //     });
+    // }
 
     public setUpAll() {
         this.setUpMonitoringChannel();
         this.setUpMonitors();
-        this.setUpNotifySubscribers();
+        //this.setUpNotifySubscribers();
     }
 
     private safeAll(): void {
-        const logger: Logger = Logger.getInstance();
-        const data = "{ \"monitors\":" + JSON.stringify(this.monitors)+"\n, \"monitoringChannel\":"+JSON.stringify(this.channel)+"\n, \"notifySubscribers\":"+JSON.stringify(this.clients) + "}";
+        const logger: Logger = Logger.getInstance(); // TO DO dont allow undefined!
+        const data = JSON.stringify(this.data);
         fs.writeFile(this.path, data, () => {
             logger.Info("Data has been persisted");
         })

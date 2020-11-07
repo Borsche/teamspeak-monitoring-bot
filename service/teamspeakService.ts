@@ -38,23 +38,27 @@ export class TeamSpeakService {
         return this.activeChannel;
     }
 
-    setMonitoringChannelWithId(id): string {
-        const persister: Persister = Persister.getInstance();
+    setMonitoringChannelWithId(id: string) {
+        return new Promise((resolve, reject) => {
+            const persister: Persister = Persister.getInstance();
 
-        this.teamspeak.getChannelById(id).then(channel => {
-            if(channel) {
-                this.activeChannel = channel;
-                persister.setMonitoringChannel(channel);
+            let reply: string;
 
-                return `Active monitoring channel changed to ${channel.name}`;
-            } else {
-                return `Could not add channel "${id}".`;    
-            }
-        }).catch(e => {
-            return `No Channel with name "${id}" exists.`;
+            this.teamspeak.getChannelById(id).then(channel => {
+                if(channel) {
+                    this.activeChannel = channel;
+                    persister.setMonitoringChannel(channel);
+
+                    reply =  `Active monitoring channel changed to ${channel.name}`;
+                } else {
+                    reply = `Could not add channel "${id}".`;    
+                }
+                resolve(reply);
+            }).catch(e => {
+                reply = `No Channel with id "${id}" exists.`;
+                reject(reply);
+            });
         });
-
-        return "";
     }
 
     addUsersToNotifyById(uid): void {
@@ -105,8 +109,12 @@ export class TeamSpeakService {
                 monitorService.removeMonitorById(parseInt(command[1]));
                 ev.invoker.message(`Service removed`);
                 break;
-            case commands.SETMONITORCHANNEL:    
-                ev.invoker.message(this.setMonitoringChannelWithId(command[1]));
+            case commands.SETMONITORCHANNEL:
+                this.setMonitoringChannelWithId(command[1]).then(reply => {
+                    ev.invoker.message(reply); 
+                }).catch(reply => {
+                    ev.invoker.message(reply); 
+                })
                 break;
             case commands.GETCHANNELID:
                 this.teamspeak.getChannelByName(command[1]).then(channel => {
