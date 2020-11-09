@@ -33,7 +33,7 @@ steps:
     - mkdir -p /root/.ssh/
     - echo $PUB_KEY > /root/.ssh/known_hosts
     - sshpass -p $PASSWORD ssh -tt $USERNAME@$IP
-    - ./update.sh
+    - ./update.sh && exit
   when:
     branch:
       - master
