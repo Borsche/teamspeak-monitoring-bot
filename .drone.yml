@@ -26,7 +26,7 @@ steps:
     password:
       from_secret: password
     port: 22
-  commands:
+  script:
     - cd teamspeak-monitoring-bot 
     - screen -X -S tsbot quit
     - git pull
