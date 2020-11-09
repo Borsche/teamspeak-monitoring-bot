@@ -33,15 +33,7 @@ steps:
     - mkdir -p /root/.ssh/
     - echo $PUB_KEY > /root/.ssh/known_hosts
     - sshpass -p $PASSWORD ssh -tt $USERNAME@$IP
-    - echo "Shutting down old instance"
-    - cd teamspeak-monitoring-bot 
-    - screen -X -S tsbot quit
-    - echo "Getting new Version from master"
-    - git pull
-    - echo "Reinstalling modules"
-    - npm ci
-    - echo "Starting Bot"
-    - screen -dm -S tsbot npm start  
+    - ./update.sh
   when:
     branch:
       - master
