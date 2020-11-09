@@ -11,28 +11,28 @@ steps:
 
 ---
 kind: pipeline
-type: ssh
+type: docker
 name: Deploy
 
-server:
-  host: 85.214.231.163
-  user:
-    from_secret: username
-  password:
-    from_secret: password
+
 
 steps:
 - name: Stop The Bot
+  image: appleboy/drone-ssh
+  settings:
+    host: 85.214.231.163
+    username: 
+      from_secret: username
+    password:
+      from_secret: password
+    port: 22
   commands:
     - cd teamspeak-monitoring-bot 
     - screen -X -S tsbot quit
-- name: Pull Changes
-  commands:
     - git pull
-- name: Reinstall NodeModules
-  commands:
     - rm -rf node_modules/
     - npm install
-- name: Start The Bot
-  commands:
     - screen -dm -S tsbot npm start  
+  when:
+    branch:
+      - master
