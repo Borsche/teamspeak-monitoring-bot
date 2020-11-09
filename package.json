@@ -4,7 +4,7 @@
   "description": "",
   "main": "start.js",
   "scripts": {
-    "start": "ts-node start.ts",
+    "start": "touch settings.json; ts-node start.ts",
     "test": "mocha"
   },
   "author": "",
