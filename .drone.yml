@@ -27,11 +27,15 @@ steps:
       from_secret: password
     port: 22
   script:
+    - echo "Shutting down old instance"
     - cd teamspeak-monitoring-bot 
     - screen -X -S tsbot quit
+    - echo "Getting new Version from master"
     - git pull
+    - echo "Reinstalling modules"
     - rm -rf node_modules/
     - npm install
+    - echo "Starting Bot"
     - screen -dm -S tsbot npm start  
   when:
     branch:
