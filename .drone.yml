@@ -32,7 +32,7 @@ steps:
     - apk add --no-cache openssh-client sshpass
     - mkdir -p /root/.ssh/
     - echo $PUB_KEY > /root/.ssh/known_hosts
-    - sshpass -p $PASSWORD ssh $USERNAME@$IP
+    - sshpass -p $PASSWORD ssh -tt $USERNAME@$IP
     - echo "Shutting down old instance"
     - cd teamspeak-monitoring-bot 
     - screen -X -S tsbot quit
