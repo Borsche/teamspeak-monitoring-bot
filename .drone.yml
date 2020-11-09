@@ -22,15 +22,17 @@ steps:
   environment:
     USERNAME:
       from_secret: username
-    Password:
+    PASSWORD:
       from_secret: password
     PUB_KEY:
       from_secret: PUB_KEY
+    IP:
+      from_secret: ip
   commands:
     - apk add --no-cache openssh-client sshpass
     - mkdir -p /root/.ssh/
     - echo $PUB_KEY > /root/.ssh/known_hosts
-    - sshpass -p $password ssh $username@$ip
+    - sshpass -p $PASSWORD ssh $USERNAME@$IP
     - echo "Shutting down old instance"
     - cd teamspeak-monitoring-bot 
     - screen -X -S tsbot quit
