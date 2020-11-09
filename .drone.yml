@@ -19,9 +19,15 @@ name: Deploy
 steps:
 - name: Deployment
   image: alpine
+  environment:
+    USERNAME:
+      from_secret: username
+    Password:
+      from_secret: password
+    PUB_KEY:
+      from_secret: PUB_KEY
   commands:
-    - apk add --no-cache openssh-client
-    - apk add --no-cache sshpass
+    - apk add --no-cache openssh-client sshpass
     - mkdir -p /root/.ssh/
     - echo $PUB_KEY > /root/.ssh/known_hosts
     - sshpass -p $password ssh $username@$ip
@@ -31,8 +37,7 @@ steps:
     - echo "Getting new Version from master"
     - git pull
     - echo "Reinstalling modules"
-    - rm -rf node_modules/
-    - npm install
+    - npm ci
     - echo "Starting Bot"
     - screen -dm -S tsbot npm start  
   when:
