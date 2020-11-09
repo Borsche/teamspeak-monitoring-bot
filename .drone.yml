@@ -17,16 +17,14 @@ name: Deploy
 
 
 steps:
-- name: Stop The Bot
-  image: appleboy/drone-ssh
-  settings:
-    host: 85.214.231.163
-    username: 
-      from_secret: username
-    password:
-      from_secret: password
-    port: 22
-  script:
+- name: Deployment
+  image: alpine
+  commands:
+    - apk add --no-cache openssh-client
+    - apk add --no-cache sshpass
+    - mkdir -p /root/.ssh/
+    - echo $PUB_KEY > /root/.ssh/known_hosts
+    - sshpass -p $password ssh $username@$ip
     - echo "Shutting down old instance"
     - cd teamspeak-monitoring-bot 
     - screen -X -S tsbot quit
