@@ -32,8 +32,7 @@ steps:
     - apk add --no-cache openssh-client sshpass
     - mkdir -p /root/.ssh/
     - echo $PUB_KEY > /root/.ssh/known_hosts
-    - sshpass -p $PASSWORD ssh $USERNAME@$IP
-    - ./update.sh
+    - sshpass -p $PASSWORD ssh -tt $USERNAME@$IP './update.sh'
   when:
     branch:
       - master
